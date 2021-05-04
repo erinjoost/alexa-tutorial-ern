@@ -1,13 +1,9 @@
-/* *
- * This sample demonstrates handling intents from an Alexa skill using the Alexa Skills Kit SDK (v2).
- * Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
- * session persistence, api calls, and more.
- * */
-const Alexa = require('ask-sdk-core');
+require('dotenv').config();
+const alexa = require('ask-sdk');
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
+        return alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
         const speakOutput = 'Welcome, you can say Hello or Help. Which would you like to try?';
@@ -21,8 +17,8 @@ const LaunchRequestHandler = {
 
 const HelloWorldIntentHandler = {
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
+        return alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
     },
     handle(handlerInput) {
         const speakOutput = 'Hello World!';
@@ -36,8 +32,8 @@ const HelloWorldIntentHandler = {
 
 const HelpIntentHandler = {
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
+        return alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
         const speakOutput = 'You can say hello to me! How can I help?';
@@ -51,9 +47,9 @@ const HelpIntentHandler = {
 
 const CancelAndStopIntentHandler = {
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && (Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.CancelIntent'
-                || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
+        return alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && (alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.CancelIntent'
+                || alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
         const speakOutput = 'Goodbye!';
@@ -70,8 +66,8 @@ const CancelAndStopIntentHandler = {
  * */
 const FallbackIntentHandler = {
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.FallbackIntent';
+        return alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.FallbackIntent';
     },
     handle(handlerInput) {
         const speakOutput = 'Sorry, I don\'t know about that. Please try again.';
@@ -89,7 +85,7 @@ const FallbackIntentHandler = {
  * */
 const SessionEndedRequestHandler = {
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'SessionEndedRequest';
+        return alexa.getRequestType(handlerInput.requestEnvelope) === 'SessionEndedRequest';
     },
     handle(handlerInput) {
         console.log(`~~~~ Session ended: ${JSON.stringify(handlerInput.requestEnvelope)}`);
@@ -104,10 +100,10 @@ const SessionEndedRequestHandler = {
  * */
 const IntentReflectorHandler = {
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
+        return alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
     },
     handle(handlerInput) {
-        const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
+        const intentName = alexa.getIntentName(handlerInput.requestEnvelope);
         const speakOutput = `You just triggered ${intentName}`;
 
         return handlerInput.responseBuilder
@@ -141,16 +137,31 @@ const ErrorHandler = {
  * payloads to the handlers above. Make sure any new handlers or interceptors you've
  * defined are included below. The order matters - they're processed top to bottom 
  * */
-exports.handler = Alexa.SkillBuilders.custom()
-    .addRequestHandlers(
-        LaunchRequestHandler,
-        HelloWorldIntentHandler,
-        HelpIntentHandler,
-        CancelAndStopIntentHandler,
-        FallbackIntentHandler,
-        SessionEndedRequestHandler,
-        IntentReflectorHandler)
-    .addErrorHandlers(
-        ErrorHandler)
-    .withCustomUserAgent('sample/hello-world/v1.2')
-    .lambda();
+ exports.handler = async function(event, context) {
+    let skill = alexa.SkillBuilders.standard()
+        .withSkillId(process.env.SKILL_ID)
+        .addRequestHandlers(
+          CheckAudioInterfaceHandler,
+          LaunchRequestHandler,
+          WashHandsHandler,
+          ResumeHandler,
+          HelpIntentHandler,
+          RepeatIntentHandler,
+          StartOverHandler,
+          PausePlaybackHandler,
+          CancelAndStopIntentHandler,
+          SessionEndedRequestHandler,
+          SystemExceptionHandler,
+          AudioPlayerEventHandler,
+          NextPlaybackHandler,
+          PreviousPlaybackHandler,
+        )
+        .addRequestInterceptors(LoadPersistentAttributesRequestInterceptor)
+        .addResponseInterceptors(SavePersistentAttributesResponseInterceptor)
+        .addErrorHandlers(ErrorHandler)
+        .withTableName(process.env.PERSISTENCE_DB_NAME)
+        .withDynamoDbClient(dbClient)
+        .create();
+    
+    return await skill.invoke(event, context);
+};
