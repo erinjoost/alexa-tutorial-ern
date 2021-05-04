@@ -1,0 +1,5 @@
+
+ASK_SKILL_ID=''
+PERSISTENCE_DB_NAME=''
+ASSET_LOCATION=s3://'bucket-name'
+AWS_PROFILE=''
