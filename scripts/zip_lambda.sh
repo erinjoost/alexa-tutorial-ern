@@ -4,7 +4,7 @@ rm ./lambda.zip
 
 echo "making lambda zip....."
 mkdir temp
-cp -r lambda/src. temp
+cp -r lambda/src/. temp
 cp -r node_modules/ temp/node_modules/
 cp -r package.json temp/package.json
 

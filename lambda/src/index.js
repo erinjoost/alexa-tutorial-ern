@@ -6,7 +6,7 @@ const LaunchRequestHandler = {
       return alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
   },
   handle(handlerInput) {
-      const speakOutput = 'Welcome, you can say Hello or Help. Which would you like to try?';
+      const speakOutput = 'This is a Launch Request!';
 
       return handlerInput.responseBuilder
           .speak(speakOutput)
@@ -34,7 +34,7 @@ const LaunchRequestHandler = {
         .create();
     
     const response = await skill.invoke(event, context);
-    
+
     if (process.env.DEBUG === "true") {
       console.log(`RESPONSE++++${JSON.stringify(response)}`);
     }

@@ -5,9 +5,10 @@
   "scripts": {
     "test": "npx lambda-local -l lambda/src/index.js -h handler -e lambda/test/sample_invoke.json",
     "zip": "./scripts/zip_lambda.sh",
-    "update": "./scripts/update_lambda.sh"
+    "update": "./scripts/update_lambda.sh",
+    "lambda":"./scripts/zip_lambda.sh && ./scripts/update_lambda.sh"
   },
-  "author": "Amazon Alexa",
+  "author": "Erin Joost",
   "dependencies": {
     "ask-sdk": "^2.10.2",
     "aws-sdk": "^2.326.0",
