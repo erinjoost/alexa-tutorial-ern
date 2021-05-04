@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx lambda-local -l lambda/src/index.js -h handler -e lambda/test/sample_invoke.json",
+    "zip": "./scripts/zip_lambda.sh",
+    "update": "./scripts/update_lambda.sh"
   },
   "author": "Amazon Alexa",
   "dependencies": {
+    "ask-sdk": "^2.10.2",
     "aws-sdk": "^2.326.0",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "lambda-local": "^1.7.4"
   }
 }

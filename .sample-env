@@ -1,6 +1,7 @@
-
 ASK_SKILL_ID=''
+AWS_PROFILE='pbs-kids-playground'
+LAMBDA_ARN=''
+
 PERSISTENCE_DB_NAME=''
 ASSET_LOCATION=s3://'bucket-name'
-AWS_PROFILE=''
 DEBUG=true
