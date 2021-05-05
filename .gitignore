@@ -2,7 +2,3 @@ node_modules
 .env
 .DS_Store
 *.zip
-.terraform
-*.tfvars
-s3-sync.txt
-assets/audio/
