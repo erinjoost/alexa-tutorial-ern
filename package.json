@@ -5,8 +5,8 @@
   "scripts": {
     "test": "npx lambda-local -l lambda/src/index.js -h handler -e lambda/test/sample_invoke.json",
     "zip": "./scripts/zip_lambda.sh",
-    "update": "./scripts/update_lambda.sh",
-    "lambda":"./scripts/zip_lambda.sh && ./scripts/update_lambda.sh"
+    "push": "./scripts/push_lambda.sh",
+    "update_lambda":"./scripts/zip_lambda.sh && ./scripts/push_lambda.sh"
   },
   "author": "Erin Joost",
   "dependencies": {
